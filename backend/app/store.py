@@ -7,6 +7,7 @@ from __future__ import annotations
 from typing import Any
 
 from app.seed import SEED_ROWS
+from app.services.schedule_bootstrap import enrich_schedule_data
 
 
 class Store:
@@ -14,6 +15,8 @@ class Store:
         self._tables: dict[str, list[dict[str, Any]]] = {
             name: [dict(row) for row in rows] for name, rows in SEED_ROWS.items()
         }
+        # 调度时间口径迁移的存量数据引导：补全时区基线、历史批次与缺依据样本。
+        enrich_schedule_data(self._tables)
 
     def module_names(self) -> list[str]:
         return sorted(self._tables)

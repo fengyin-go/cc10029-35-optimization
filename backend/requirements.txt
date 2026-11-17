@@ -12,6 +12,10 @@ pydantic==2.14.3
 pydantic_core==2.50.4
 python-dotenv==1.2.4
 PyYAML==6.0.3
+# 调度时间口径迁移：Cron 时间序列计算（依赖 python-dateutil，tzdata 为 zoneinfo 提供 IANA 时区库）
+croniter==7.0.0
+python-dateutil==4.0.0
+tzdata==2026.6
 starlette==1.10.0
 typing-inspection==0.4.5
 typing_extensions==4.16.0
@@ -19,3 +23,7 @@ uvicorn==0.54.0
 uvloop==0.23.0
 watchfiles==1.3.0
 websockets==17.4
+
+# 仅测试用：通过 FastAPI TestClient 做接口级验收，不参与运行时
+httpx==0.28.1
+pytest==9.2.0

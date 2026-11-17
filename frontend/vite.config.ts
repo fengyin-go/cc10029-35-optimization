@@ -20,7 +20,20 @@ export default defineConfig({
     open: false,
     strictPort: false,
     proxy: {
-      '/api': {
+      // 用正则锚定 /api/ 段，避免字符串前缀匹配把页面路由 /apigate 误转发到后端。
+      '^/api/': {
+        target: proxyTarget,
+        changeOrigin: true,
+      },
+    },
+  },
+  // 生产预览同样代理 /api，供构建后 E2E 使用，避免 dev 代理抖动。
+  preview: {
+    host: '127.0.0.1',
+    port: 5173,
+    strictPort: true,
+    proxy: {
+      '^/api/': {
         target: proxyTarget,
         changeOrigin: true,
       },

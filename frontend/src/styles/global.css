@@ -70,3 +70,26 @@ body { margin: 0; background: #f6f8fb; color: #1f2937; }
 .analysis-chart { display: flex; align-items: flex-end; gap: 8px; height: 160px; padding: 12px 0; }
 .analysis-bar { flex: 1; border-radius: 4px 4px 0 0; background: var(--brand); min-width: 24px; position: relative; transition: height 0.4s; }
 .analysis-bar span { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--muted); white-space: nowrap; }
+
+/* ===== 调度时间口径迁移：兼容报告 / 待下发清单面板 ===== */
+.migration-panel { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-top: 16px; }
+.migration-head h3 { margin: 0 0 4px; font-size: 16px; }
+.migration-msg { font-size: 13px; color: var(--brand); background: #eef4ff; border: 1px solid #cfe0ff; border-radius: 6px; padding: 6px 10px; }
+.migration-note { font-size: 12px; color: var(--muted); margin: 6px 0 10px; }
+.kpi-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.kpi-chip { font-size: 12px; background: #f1f5f9; border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px; color: #334155; }
+.kpi-chip.ok { background: #e8f8ef; border-color: #9fe0b6; color: #15803d; }
+.kpi-chip.bad { background: #fdecec; border-color: #f3b6b6; color: #b91c1c; }
+.kpi-chip.warn { background: #fff6e5; border-color: #f5d28a; color: #b45309; }
+.table-scroll { overflow-x: auto; margin-bottom: 14px; }
+.table-title { font-size: 14px; margin: 12px 0 6px; }
+.tag { display: inline-block; font-size: 12px; border-radius: 4px; padding: 2px 8px; white-space: nowrap; }
+.tag.ok { background: #e8f8ef; color: #15803d; }
+.tag.bad { background: #fdecec; color: #b91c1c; }
+.tag.warn { background: #fff6e5; color: #b45309; }
+.muted { color: var(--muted); font-size: 12px; }
+.window-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.window-list li { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 12px; }
+.window-list .wall { font-family: monospace; font-weight: 600; }
+.window-list .src { color: var(--muted); font-family: monospace; }
+.reconcile-box { border-top: 1px dashed var(--border); padding-top: 10px; }

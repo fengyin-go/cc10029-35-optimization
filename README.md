@@ -75,5 +75,29 @@ npm run dev
 - 列表接口统一返回 `{ items, total, page, size }`，动作接口统一返回 `{ ok, message }`。
 - 状态流转只允许在 `app/services` 里改，路由层不做业务判断。
 
+## 调度时间口径迁移（时区兼容）
+
+Cron 不再按服务器本地时间解释，改为逐条记录 IANA 时区并显式换算，解决跨时区执行窗口偏移。
+
+- 目标时区由环境变量 `SCHEDULE_TARGET_TZ`（默认 `UTC`）配置，提交报告时也可在请求体
+  用 `target_timezone` 单独指定。依赖 `croniter`（Cron 序列）与 `tzdata`（IANA 时区库）。
+- **调度时间兼容数据报告**（定时调度）：每条计划同时记录「原时区 `source_timezone` /
+  目标时区 `target_timezone` / Cron 表达式 `cron`」三要素；缺少时区依据的计划
+  `eligible=false`，错误码 `MISSING_SOURCE_TIMEZONE`，不进入自动执行。
+  - `POST /api/schedule/compatibility-reports` 生成并提交（线程锁 + 幂等键去重，
+    并发或连续两次相同提交只保留一个成功版本，旧版本置 `superseded`）。
+  - `GET /api/schedule/compatibility-reports/active` 读取唯一生效版本。
+  - `GET /api/schedule/compatibility-reports/versions` 查看版本链。
+  - `GET /api/schedule/compatibility-reports/history-batches` 历史批次（仍按原时区固化，
+    迁移只影响尚未生成的执行窗口）。
+- **夏令时**：春跳缺口（墙钟时间不存在）的窗口跳过并计入 `gap_skipped`；秋退歧义
+  （同一墙钟出现两次）只保留 `fold=0` 的第一个批次（`note=dst-fold-merged`），
+  读取端始终只有一个带时区依据的完整批次清单。
+- **爬虫引擎待下发清单**：只读取 active 报告，下发时间先换算到目标时区。
+  - `GET /api/crawler/dispatch/pending` 待下发任务清单。
+  - `GET /api/crawler/dispatch/reconcile` 顺着数据流核对报告与清单的差异。
+- 旧版/新版报告目标时区不同，爬虫引擎得到的下游下发时间随之不同；既有列表、登记、
+  动作、导出接口的字段与错误码保持不变。
+
 领域：数据工程
 子方向：数据采集、爬虫与RPA

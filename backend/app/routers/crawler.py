@@ -10,6 +10,7 @@ from fastapi.responses import StreamingResponse
 
 from app.schemas import ActionPayload, ActionResult, EntryPayload
 from app.services.crawler import CrawlerService
+from app.services.dispatch import dispatch_service
 
 router = APIRouter(prefix="/api/crawler", tags=["爬虫引擎"])
 service = CrawlerService()
@@ -68,3 +69,17 @@ def run_action(entry_id: int, payload: ActionPayload) -> ActionResult:
     if entry_or_none is None:
         return ActionResult(ok=False, message=message)
     return ActionResult(ok=True, message=message, entry=entry_or_none)
+
+
+# ===================== 待下发任务清单（读取兼容报告 active 版本） =====================
+
+@router.get("/dispatch/pending")
+def get_pending_dispatch() -> dict[str, Any]:
+    """待下发任务清单：下发时间已换算到目标时区，缺时区依据的计划不进入。"""
+    return dispatch_service.get_dispatch()
+
+
+@router.get("/dispatch/reconcile")
+def get_dispatch_reconcile() -> dict[str, Any]:
+    """顺着数据流核对：兼容报告计划项 与 待下发清单 的差异。"""
+    return dispatch_service.reconcile()
